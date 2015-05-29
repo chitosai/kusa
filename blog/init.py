@@ -1,36 +1,23 @@
 import os, json
-
-# dirs that will be created
-dirs = ['posts', 'templates', 'static']
-
-# default config file
-default_config = '''{
-	"url"         : "http://yourdomain/",
-	"name"        : "your blog name",
-	"description" : "whatever you like",
-	"author"      : "your name",
-	"feed"        : "something like /feed"
-}'''
+import config
 
 def init():
-	global dirs, default_config
-
 	# put the default config file
 	# and check if current dir is alreay inited
 	try:
-		f = open('config.json', 'r')
+		f = open(config.config_file, 'r')
 		print 'You have already initialized Chitose Blog in this dir'
 		return False
 	except:
-		f = open('config.json', 'w')
-		f.write(default_config)
+		f = open(config.config_file, 'w')
+		f.write(config.default_config)
 	finally:
 		f.close()
 
 	# make dir
 	cur_dir = os.path.abspath('.')
-	for dir_name in dirs:
-		new_dir = os.path.join(cur_dir, dir_name)
+	for dir_name in config.dirs:
+		new_dir = os.path.join(cur_dir, config.dir_prefix + dir_name)
 		try:
 			os.mkdir(new_dir)
 		except:
