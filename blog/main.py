@@ -2,9 +2,7 @@
 
 import sys
 from init import *
-
-def build():
-	print 'build'
+from build import *
 
 action = {
 	'build' : build,
