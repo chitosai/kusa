@@ -40,12 +40,11 @@ def parse_post_config(file_path):
 	post_content = ''.join(file_raw[i+1:])
 	return post_config, post_content
 
-
 def build():
 	# step.1 - traversal the _post dir to compile all the .markdown posts
 	post_list = {}
-	cur_dir = os.path.join(os.path.abspath('.'), PRESERVED_DIR_PREFIX + 'posts')
-	for file_name in os.listdir(cur_dir):
+	post_dir = os.path.join(os.path.abspath('.'), PRESERVED_DIR_PREFIX + 'posts')
+	for file_name in os.listdir(post_dir):
 		post = {}
 		# get permalink/date from file name
 		post['permalink'], post['date'] = parse_post_file_name(file_name)
@@ -54,7 +53,7 @@ def build():
 			continue
 
 		# then parse the content of the post file
-		file_path = os.path.join(cur_dir, file_name)
+		file_path = os.path.join(post_dir, file_name)
 		post_config, post_content = parse_post_config(file_path)
 		if not post_config:
 			print 'Failed to parse the config part of "%s"' % file_name
@@ -65,5 +64,6 @@ def build():
 		post['content'] = post_content
 			
 	# step.2 - traversal the root path and copy & compile all the .html pages
+
 
 	# step.3 - just copy the whole _static dir to _dist: 1
