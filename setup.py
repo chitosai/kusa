@@ -7,7 +7,8 @@ setup(name='chitose-blog',
       packages=['blog'],
       install_requires=[
       	'mistune==0.5.1',
-      	'jinja2'
+      	'jinja2',
+            'pyyaml'
       ],
       entry_points={
       	'console_scripts': ['chitose=blog.main:main']
