@@ -1,14 +1,14 @@
 # prefix to distinguish chitose's preserved dir from user's own dir
-dir_prefix = '_'
+PRESERVED_DIR_PREFIX = '_'
 
 # dirs that will be created
-dirs = ['posts', 'templates', 'static', 'dist']
+PRESERVED_DIRS = ['posts', 'templates', 'static', 'dist']
 
 # config file name
-config_file = 'config.json'
+CONFIG_FILE_NAME = 'config.json'
 
 # default config file
-default_config = '''{
+DEFAULT_CONFIG = '''{
 	"url"         : "http://yourdomain/",
 	"name"        : "your blog name",
 	"description" : "whatever you like",

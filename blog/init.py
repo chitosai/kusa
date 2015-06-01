@@ -1,23 +1,23 @@
 import os, json
-import config
+from config import *
 
 def init():
 	# put the default config file
 	# and check if current dir is alreay inited
 	try:
-		f = open(config.config_file, 'r')
+		f = open(CONFIG_FILE_NAME, 'r')
 		print 'You have already initialized Chitose Blog in this dir'
 		return False
 	except:
-		f = open(config.config_file, 'w')
-		f.write(config.default_config)
+		f = open(CONFIG_FILE_NAME, 'w')
+		f.write(DEFAULT_CONFIG)
 	finally:
 		f.close()
 
 	# make dir
 	cur_dir = os.path.abspath('.')
-	for dir_name in config.dirs:
-		new_dir = os.path.join(cur_dir, config.dir_prefix + dir_name)
+	for dir_name in PRESERVED_DIRS:
+		new_dir = os.path.join(cur_dir, PRESERVED_DIR_PREFIX + dir_name)
 		try:
 			os.mkdir(new_dir)
 		except:

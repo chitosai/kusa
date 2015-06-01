@@ -1,6 +1,6 @@
 import os, re, datetime
 import jinja2
-import config
+from config import *
 
 def parse_post_file_name(file_name):
 	'''Method to parse a string to date-permalink.ext array
@@ -16,14 +16,14 @@ def parse_post_file_name(file_name):
 def build():
 	# step.1 - traversal the _post dir to compile all the .md posts
 	post_list = {}
-	cur_dir = os.path.join(os.path.abspath('.'), config.dir_prefix + 'posts')
+	cur_dir = os.path.join(os.path.abspath('.'), PRESERVED_DIR_PREFIX + 'posts')
 	for p in os.listdir(cur_dir):
 		post = {}
 		# get permalink/date from file name
 		post['permalink'], post['date'] = parse_post_file_name(p)
 		if not post['permalink']:
 			continue
-
+			
 		# do next staffs 
 			
 	# step.2 - traversal the root path and copy & compile all the .html pages
