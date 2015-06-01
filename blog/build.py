@@ -40,9 +40,8 @@ def parse_post_config(file_path):
 	post_content = ''.join(file_raw[i+1:])
 	return post_config, post_content
 
-def build():
-	# step.1 - traversal the _post dir to compile all the .markdown posts
-	post_list = {}
+def parse_post():
+	post_list = []
 	post_dir = os.path.join(os.path.abspath('.'), PRESERVED_DIR_PREFIX + 'posts')
 	for file_name in os.listdir(post_dir):
 		post = {}
@@ -62,8 +61,18 @@ def build():
 		# fill into the post dict
 		post.update(post_config)
 		post['content'] = post_content
+
+		# append to post_list
+		post_list.append(post)
+
+	return post_list
+
+def build():
+	# step.1 - traversal the _post dir to parse all the .markdown posts
+	post_list = parse_post()
 			
 	# step.2 - traversal the root path and copy & compile all the .html pages
+	cur_dir = os.path.abspath('.')
 
 
 	# step.3 - just copy the whole _static dir to _dist: 1
