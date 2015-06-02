@@ -5,13 +5,15 @@ PRESERVED_DIR_PREFIX = '_'
 PRESERVED_DIRS = ['posts', 'templates', 'static', 'dist']
 
 # config file name
-CONFIG_FILE_NAME = 'config.json'
+CONFIG_FILE_NAME = '_config.yml'
 
 # default config file
-DEFAULT_CONFIG = '''{
-	"url"         : "http://yourdomain/",
-	"name"        : "your blog name",
-	"description" : "whatever you like",
-	"author"      : "your name",
-	"feed"        : "something like /feed"
-}'''
+DEFAULT_CONFIG = '''\
+url: http://youblogdomain/
+name: your blog name
+description: anything you like
+author: the default author
+permalink: /w/:title
+feed: /feed
+comments: true
+'''
