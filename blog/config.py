@@ -2,7 +2,7 @@
 PRESERVED_DIR_PREFIX = '_'
 
 # dirs that will be created
-PRESERVED_DIRS = ['posts', 'templates', 'static', 'dist']
+PRESERVED_DIRS = ['posts', 'templates', 'static', 'dist', 'includes', 'data']
 
 # config file name
 CONFIG_FILE_NAME = '_config.yml'
@@ -14,6 +14,6 @@ name: your blog name
 description: anything you like
 author: the default author
 permalink: /w/:title
-feed: /feed
+rss_path: /feed
 comments: true
 '''

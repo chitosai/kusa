@@ -47,7 +47,7 @@ def get_post_content(file_path):
 	except:
 		return False, False
 
-	# get the content and compile it
+	# get the content and compile markdown
 	post_content_raw = ''.join(file_raw[i+1:])
 	post_content = mistune.markdown(post_content_raw)
 
@@ -117,13 +117,15 @@ def build():
 	templates = get_templates()
 
 	# render the posts!
-	template_env = jinja2.Environment(loader = jinja2.FileSystemLoader(PRESERVED_DIR_PREFIX + 'templates'))
+	template_env = jinja2.Environment(loader = jinja2.FileSystemLoader([PRESERVED_DIR_PREFIX + 'templates',
+																		PRESERVED_DIR_PREFIX + 'includes']))
 	for post in site['posts']:
 		template = template_env.get_template(post['layout'] + '.html')
-		output = template.render(site = site, page = post, content = post['content'])
+		output = template.render(site = site, page = post, content = post['content'], comments = site['comments'])
 
 		# render to permalink url
-
+		file_name = site['permalink'].replace(':title', post['permalink']).replace(':date', post['date'].strftime('%Y-%m-%d'))
+		print file_name
 
 	# step.2 - traversal the root path and copy & compile all the .html pages
 	cur_dir = os.path.abspath('.')
