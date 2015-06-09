@@ -1,3 +1,5 @@
+import os
+
 # prefix to distinguish chitose's preserved dir from user's own dir
 PRESERVED_DIR_PREFIX = '_'
 
@@ -13,7 +15,12 @@ url: http://youblogdomain/
 name: your blog name
 description: anything you like
 author: the default author
-permalink: /w/:title
+permalink: /:year/:month/:title
 rss_path: /feed
 comments: true
 '''
+
+# current path
+BASE_DIR = os.path.abspath('.')
+TEMPLATE_DIR = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'templates')
+OUTPUT_DIR = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'dist')

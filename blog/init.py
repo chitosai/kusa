@@ -1,4 +1,4 @@
-import os, json
+import json
 from config import *
 
 def init():
@@ -15,9 +15,8 @@ def init():
 		f.close()
 
 	# make dir
-	cur_dir = os.path.abspath('.')
 	for dir_name in PRESERVED_DIRS:
-		new_dir = os.path.join(cur_dir, PRESERVED_DIR_PREFIX + dir_name)
+		new_dir = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + dir_name)
 		try:
 			os.mkdir(new_dir)
 		except:

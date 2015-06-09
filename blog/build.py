@@ -1,4 +1,4 @@
-import os, re, datetime
+import re, datetime
 import jinja2, yaml, mistune
 from config import *
 
@@ -7,6 +7,10 @@ def get_user_config():
 	f = open(CONFIG_FILE_NAME, 'r')
 	try:
 		config = yaml.load(f.read())
+		# pre-process config
+		if 'url' not in config or 'name' not in config or 'permalink' not in config \
+		    or 'author' not in config:
+		    exit('Make sure you have url/name/author/permalink in your config file!')
 	except:
 		config = {}
 	finally:
@@ -57,7 +61,7 @@ def get_post_content(file_path):
 def get_posts():
 	'''Call this method to get posts from _post dir'''
 	posts = []
-	post_dir = os.path.join(os.path.abspath('.'), PRESERVED_DIR_PREFIX + 'posts')
+	post_dir = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'posts')
 	for file_name in os.listdir(post_dir):
 		post = {}
 		# get permalink/date from file name
@@ -85,7 +89,7 @@ def get_posts():
 def get_templates():
 	'''Parse all the template files in _templates dir and return a list'''
 	templates = {}
-	template_dir = os.path.join(os.path.abspath('.'), PRESERVED_DIR_PREFIX + 'templates')
+	template_dir = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'templates')
 	# traversal the _templates dir
 	for file_name in os.listdir(template_dir):
 		# get the template name
@@ -103,10 +107,8 @@ def get_templates():
 	return templates
 
 def build():
-	# the site var
-	site = {}
-
 	# get user's config
+	site = {}
 	config = get_user_config()
 	site.update(config)
 
@@ -120,15 +122,43 @@ def build():
 	template_env = jinja2.Environment(loader = jinja2.FileSystemLoader([PRESERVED_DIR_PREFIX + 'templates',
 																		PRESERVED_DIR_PREFIX + 'includes']))
 	for post in site['posts']:
-		template = template_env.get_template(post['layout'] + '.html')
-		output = template.render(site = site, page = post, content = post['content'], comments = site['comments'])
+		# process the permalink url
+		file_name = site['permalink'] \
+				 .replace(':title', post['permalink']) \
+				 .replace(':date', post['date'].strftime('%Y-%m-%d')) \
+				 .replace(':year', str(post['date'].year)) \
+				 .replace(':month', str(post['date'].month)) \
+				 .replace(':day', str(post['date'].day))
+		# make sure file_name isn't started with /
+		if file_name[0] == '/': 
+			file_name = file_name[1:]
 
-		# render to permalink url
-		file_name = site['permalink'].replace(':title', post['permalink']).replace(':date', post['date'].strftime('%Y-%m-%d'))
-		print file_name
+		# seperate file_name to array
+		file_name_array = file_name.split('/')
+		current_path = OUTPUT_DIR
+		# and mkdir for it
+		if len(file_name_array) > 1:
+			for path in file_name_array:
+				# if path contains empty part(//), just ignore it
+				if path == '': continue
+				current_path = os.path.join(current_path, path)
+				try:
+					os.mkdir(current_path)
+				except:
+					pass
+
+		# render the post
+		template = template_env.get_template(post['layout'] + '.html')
+		content = template.render(site = site, page = post, content = post['content'], comments = site['comments'])
+
+		# write to output file
+		file_name = os.path.join(current_path, 'index.html')
+		f = open(file_name, 'w')
+		f.write(content.encode('utf-8'))
+		f.close()
 
 	# step.2 - traversal the root path and copy & compile all the .html pages
-	cur_dir = os.path.abspath('.')
+
 
 
 	# step.3 - just copy the whole _static dir to _dist: 1
