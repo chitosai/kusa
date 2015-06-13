@@ -41,7 +41,7 @@ def get_pages(path):
 			page = {}
 			page['file_path'] = file_rel
 			page['permalink'] = os.path.dirname(file_rel)
-			config, content = get_post_content(file_rel)
+			config, content = get_post_content(file_rel, markdown = False)
 			if not config:
 				print 'Failed to parse the config part of "%s"' % file_name
 				continue
@@ -62,7 +62,7 @@ def get_post_name(file_name):
 	else:
 		return False, False
 
-def get_post_content(file_path):
+def get_post_content(file_path, markdown = True):
 	'''Method to get the config & content of a post file'''
 	# read file content
 	f = open(file_path, 'r')
@@ -88,7 +88,11 @@ def get_post_content(file_path):
 
 	# get the content and compile markdown
 	post_content_raw = ''.join(file_raw[i+1:])
-	post_content = mistune.markdown(post_content_raw)
+	# compile the content as markdown?
+	if markdown:
+		post_content = mistune.markdown(post_content_raw)
+	else:
+		post_content = post_content_raw
 
 	# return the two parts
 	return post_config, post_content.decode('utf-8') # I don't know why but if I don't decode it jinja2 will raise an error
