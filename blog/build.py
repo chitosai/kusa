@@ -36,12 +36,13 @@ def get_pages(path):
 			continue
 
 		# is file? check its extension
-		if os.path.splitext(file_name)[-1] in ['.html', '.xml', '.markdown']:
+		ext = os.path.splitext(file_name)[-1]
+		if ext in ['.html', '.xml', '.markdown']:
 			# read its content
 			page = {}
 			page['file_path'] = file_rel
 			page['permalink'] = os.path.dirname(file_rel)
-			config, content = get_post_content(file_rel, markdown = False)
+			config, content = get_post_content(file_rel, markdown = True if ext == '.markdown' else False)
 			if not config:
 				print 'Failed to parse the config part of "%s"' % file_name
 				continue
