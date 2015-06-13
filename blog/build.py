@@ -18,6 +18,23 @@ def get_user_config():
 		f.close()
 		return config
 
+def load_user_data():
+	'''Load user data'''
+	files = os.listdir(DATA_DIR)
+	datas = {}
+	for file_name in files:
+		file_abs = os.path.join(DATA_DIR, file_name)
+		key = os.path.splitext(file_name)[0]
+		try:
+			f = open(file_abs, 'r')
+			data = yaml.load(f.read())
+			datas[key] = data
+			f.close()
+		except:
+			pass
+
+	return datas
+
 def get_pages(path):
 	'''Get all the pages under chitose root dir'''
 	files = os.listdir(path)
@@ -213,7 +230,7 @@ def build():
 	site.update(config)
 
 	# user's custom data
-	site['data'] = {}
+	site['data'] = load_user_data()
 
 	# traversal the _post dir to parse all the .markdown posts
 	site['posts'] = get_posts()
