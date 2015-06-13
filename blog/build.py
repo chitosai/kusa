@@ -118,6 +118,8 @@ def get_posts():
 		# append to posts
 		posts.append(post)
 
+	# reverse the list so the lastest post is at the head
+	posts.reverse()
 	return posts
 
 def get_templates():
