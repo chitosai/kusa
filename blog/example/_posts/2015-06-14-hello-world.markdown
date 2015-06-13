@@ -5,3 +5,8 @@ layout: post
 ---
 
 # Hell World
+
+Congrat!  
+Seeing this page means your blog is serving correctly now!
+
+Have fun with Chitose!
