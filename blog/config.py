@@ -22,5 +22,6 @@ comments: true
 
 # current path
 BASE_DIR = os.path.abspath('.')
+POST_DIR = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'posts')
 TEMPLATE_DIR = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'templates')
 OUTPUT_DIR = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'dist')

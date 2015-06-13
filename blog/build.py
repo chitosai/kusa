@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re, datetime
 import jinja2, yaml, mistune
 from config import *
@@ -17,8 +18,42 @@ def get_user_config():
 		f.close()
 		return config
 
+def get_pages(path):
+	'''Get all the pages under chitose root dir'''
+	files = os.listdir(path)
+	pages = []
+	for file_name in files:
+		# check if the file is preserved by chitose or hidden in os
+		if file_name[0] in [PRESERVED_DIR_PREFIX, '.']:
+			continue
+
+		# get relpath
+		file_rel = os.path.relpath(os.path.join(path, file_name))
+
+		# if dir, iter it on
+		if os.path.isdir(file_rel):
+			pages.extend(get_pages(file_rel))
+			continue
+
+		# is file? check its extension
+		if os.path.splitext(file_name)[-1] in ['.html', '.xml', '.markdown']:
+			# read its content
+			page = {}
+			page['file_path'] = file_rel
+			page['permalink'] = os.path.dirname(file_rel)
+			config, content = get_post_content(file_rel)
+			if not config:
+				print 'Failed to parse the config part of "%s"' % file_name
+				continue
+
+			page.update(config)
+			page['content'] = content
+			pages.append(page)
+
+	return pages
+
 def get_post_name(file_name):
-	'''Method to parse a string to date-permalink.ext array
+	'''Method to parse a string to date-title.ext array
 	   example: 2015-05-21-wtf-email-format.markdown'''
 	m = re.search('^(\d{4})-(\d{2})-(\d{2})-(.+?)\.markdown$', file_name)
 	if m:
@@ -56,22 +91,21 @@ def get_post_content(file_path):
 	post_content = mistune.markdown(post_content_raw)
 
 	# return the two parts
-	return post_config, post_content
+	return post_config, post_content.decode('utf-8') # I don't know why but if I don't decode it jinja2 will raise an error
 
 def get_posts():
-	'''Call this method to get posts from _post dir'''
+	'''Call this method to get posts from _posts dir'''
 	posts = []
-	post_dir = os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'posts')
-	for file_name in os.listdir(post_dir):
+	for file_name in os.listdir(POST_DIR):
 		post = {}
-		# get permalink/date from file name
-		post['permalink'], post['date'] = get_post_name(file_name)
-		if not post['permalink']:
+		# get title_en/date from file name
+		post['title_en'], post['date'] = get_post_name(file_name)
+		if not post['title_en']:
 			print 'Fail to parse the file_name of "%s"' % file_name
 			continue
 
 		# then parse the content of the post file
-		file_path = os.path.join(post_dir, file_name)
+		file_path = os.path.join(POST_DIR, file_name)
 		post_config, post_content = get_post_content(file_path)
 		if not post_config:
 			print 'Failed to parse the config part of "%s"' % file_name
@@ -79,7 +113,7 @@ def get_posts():
 
 		# fill into the post dict
 		post.update(post_config)
-		post['content'] = post_content.decode('utf-8') # I don't know why but if I don't decode it jinja2 will raise an error
+		post['content'] = post_content
 
 		# append to posts
 		posts.append(post)
@@ -106,11 +140,65 @@ def get_templates():
 
 	return templates
 
+def render(site, page, template_env):
+	# priority: post['permalink'] > site['permalink']
+	if 'permalink' in page:
+		permalink = page['permalink']
+	else:
+		permalink = site['permalink']
+			 
+	# make sure permalink isn't started with /
+	if len(permalink) > 0 and permalink[0] == '/': 
+		permalink = permalink[1:]
+
+	# process the permalink
+	if ':title' in permalink:
+		permalink = permalink.replace(':title', page['title_en'])
+	if ':date' in permalink:
+		permalink = permalink.replace(':date', page['date'].strftime('%Y-%m-%d'))
+	if ':year' in permalink:
+		permalink = permalink.replace(':year', str(page['date'].year))
+	if ':month' in permalink:
+		permalink = permalink.replace(':month', str(page['date'].month))
+	if ':day' in permalink:
+		permalink = permalink.replace(':day', str(page['date'].day))
+
+	# generate its url
+	page['url'] = permalink
+
+	# make path
+	permalink = os.path.join(OUTPUT_DIR, permalink)
+	try:
+		os.makedirs(permalink)
+	except:
+		pass
+
+	# call jinja2 to render the page content
+	template = template_env.from_string(page['content'])
+	page['content'] = template.render(site = site, page = page, comments = site['comments'])
+
+	# call jinja2 again to fill the rendered content into templates
+	if 'layout' in page and page['layout'] != 'none':
+		template = template_env.get_template(page['layout'] + '.html')
+		content = template.render(site = site, page = page, comments = site['comments'])
+	else:
+		content = page['content']
+
+	# write to output file
+	output_file = os.path.join(permalink, 'index.html')
+	f = open(output_file, 'w')
+	f.write(content.encode('utf-8'))
+	f.close()
+
 def build():
-	# get user's config
 	site = {}
+
+	# get user's config
 	config = get_user_config()
 	site.update(config)
+
+	# user's custom data
+	site['data'] = {}
 
 	# traversal the _post dir to parse all the .markdown posts
 	site['posts'] = get_posts()
@@ -122,43 +210,13 @@ def build():
 	template_env = jinja2.Environment(loader = jinja2.FileSystemLoader([PRESERVED_DIR_PREFIX + 'templates',
 																		PRESERVED_DIR_PREFIX + 'includes']))
 	for post in site['posts']:
-		# process the permalink url
-		file_name = site['permalink'] \
-				 .replace(':title', post['permalink']) \
-				 .replace(':date', post['date'].strftime('%Y-%m-%d')) \
-				 .replace(':year', str(post['date'].year)) \
-				 .replace(':month', str(post['date'].month)) \
-				 .replace(':day', str(post['date'].day))
-		# make sure file_name isn't started with /
-		if file_name[0] == '/': 
-			file_name = file_name[1:]
+		render(site, post, template_env)
 
-		# seperate file_name to array
-		file_name_array = file_name.split('/')
-		current_path = OUTPUT_DIR
-		# and mkdir for it
-		if len(file_name_array) > 1:
-			for path in file_name_array:
-				# if path contains empty part(//), just ignore it
-				if path == '': continue
-				current_path = os.path.join(current_path, path)
-				try:
-					os.mkdir(current_path)
-				except:
-					pass
-
-		# render the post
-		template = template_env.get_template(post['layout'] + '.html')
-		content = template.render(site = site, page = post, content = post['content'], comments = site['comments'])
-
-		# write to output file
-		file_name = os.path.join(current_path, 'index.html')
-		f = open(file_name, 'w')
-		f.write(content.encode('utf-8'))
-		f.close()
-
-	# step.2 - traversal the root path and copy & compile all the .html pages
-
-
+	# traversal the root path and copy & compile all the .html/.xml pages
+	pages = get_pages('.')
+	
+	# render the pages
+	for page in pages:
+		render(site, page, template_env)
 
 	# step.3 - just copy the whole _static dir to _dist: 1
