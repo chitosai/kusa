@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import re, datetime
+import re, datetime, shutil
 import jinja2, yaml, mistune
 from config import *
 
@@ -190,6 +190,14 @@ def render(site, page, template_env):
 	f.write(content.encode('utf-8'))
 	f.close()
 
+def copy_static():
+	# first remove the current exist static dir
+	if os.path.exists(STATIC_DIR):
+		shutil.rmtree(STATIC_DIR)
+
+	# and let shutil do the move staff
+	shutil.copytree(os.path.join(BASE_DIR, PRESERVED_DIR_PREFIX + 'static'), STATIC_DIR)
+
 def build():
 	site = {}
 
@@ -219,4 +227,5 @@ def build():
 	for page in pages:
 		render(site, page, template_env)
 
-	# step.3 - just copy the whole _static dir to _dist: 1
+	# last, just copy the whole _static dir to _dist: 1
+	copy_static()
