@@ -9,16 +9,19 @@ PRESERVED_DIRS = ['posts', 'templates', 'static', 'dist', 'includes', 'data']
 # config file name
 CONFIG_FILE_NAME = '_config.yml'
 
-# default config file
-DEFAULT_CONFIG = '''\
-url: http://youblogdomain/
-name: your blog name
-description: anything you like
-author: the default author
-permalink: /:year/:month/:title
-rss_path: /feed
-comments: true
-'''
+# example files that should be put into user's blog folder
+EXAMPLE_FILES = [
+	'_config.yml',
+	'index.markdown',
+	'link/index.markdown',
+	'feed/index.xml',
+	'_static/main.css',
+	'_data/links.yml',
+	'_templates/base.html',
+	'_templates/post.html',
+	'_posts/2015-06-14-hello-world.markdown',
+	'_includes/comments.html'
+]
 
 # current path
 BASE_DIR = os.path.abspath('.')
