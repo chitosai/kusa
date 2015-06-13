@@ -216,9 +216,15 @@ def build():
 	# traversal the _templates dir and get all templates
 	templates = get_templates()
 
-	# render the posts!
+	# before we do output, empty the current output folder
+	shutil.rmtree(OUTPUT_DIR)
+	os.mkdir(OUTPUT_DIR)
+
+	# prepare the jinja2 engine
 	template_env = jinja2.Environment(loader = jinja2.FileSystemLoader([PRESERVED_DIR_PREFIX + 'templates',
 																		PRESERVED_DIR_PREFIX + 'includes']))
+
+	# and do render the posts
 	for post in site['posts']:
 		render(site, post, template_env)
 
