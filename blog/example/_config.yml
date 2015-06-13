@@ -1,0 +1,7 @@
+url: http://youblogdomain/
+name: your blog name
+description: anything you like
+author: the default author
+permalink: /:year/:month/:title
+feed: /feed
+comments: true

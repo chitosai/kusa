@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ page.title }}</h2>
+<p class="meta">{{ page.author }} , {{ page.date  }}</p>
+<div class="post">
+{{ page.content }}
+</div>
+{% include 'comments.html' %}
+{% endblock %}

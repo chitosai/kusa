@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>{{ page.title }} - {{ site.name }}</title>
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" href="/static/main.css">
+    </head>
+    <body>
+        <div class="site">
+          <div class="header">
+            <h1 class="title">
+              <a href="/">{{ site.name }}</a> -
+              <a href="/link">Links</a> -
+              <a href="{{ site.feed }}">Feed</a>
+            </h1>
+          </div>
+         {% block content %}
+      	   {{ page.content }}
+      	 {% endblock %} 
+          <div class="footer">
+            <div class="contact">
+              <p>
+                 &copy; {{ site.name }} | <a href="{{ site.feed }}">RSS</a>
+              </p>
+            </div>
+          </div>
+        </div>
+    </body>
+</html>
