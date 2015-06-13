@@ -1,6 +1,6 @@
 from setuptools import setup
 
-setup(name='chitose-blog',
+setup(name='Kusa',
       version='1.0',
       author='TheC',
       author_email='i@thec.me',
@@ -11,5 +11,5 @@ setup(name='chitose-blog',
             'pyyaml'
       ],
       entry_points={
-      	'console_scripts': ['chitose=blog.main:main']
+      	'console_scripts': ['kusa=blog.main:main']
       })
