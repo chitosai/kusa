@@ -23,6 +23,11 @@ def load_user_data():
 	files = os.listdir(DATA_DIR)
 	datas = {}
 	for file_name in files:
+		# check ext
+		if os.path.splitext(file_name)[1] not in ['.yml', '.yaml']:
+			continue
+
+		# read
 		file_abs = os.path.join(DATA_DIR, file_name)
 		key = os.path.splitext(file_name)[0]
 		try:
@@ -30,8 +35,8 @@ def load_user_data():
 			data = yaml.load(f.read())
 			datas[key] = data
 			f.close()
-		except:
-			pass
+		except Exception, e:
+			print e
 
 	return datas
 
@@ -61,7 +66,7 @@ def get_pages(path):
 			page['permalink'] = os.path.dirname(file_rel)
 			config, content = get_post_content(file_rel, markdown = True if ext == '.markdown' else False)
 			if not config:
-				print 'Failed to parse the config part of "%s"' % file_name
+				print 'Failed to parse the config part of "%s"' % file_rel
 				continue
 
 			page.update(config)
@@ -123,14 +128,14 @@ def get_posts():
 		# get title_en/date from file name
 		post['title_en'], post['date'] = get_post_name(file_name)
 		if not post['title_en']:
-			print 'Fail to parse the file_name of "%s"' % file_name
+			print 'Failed to parse the file_name of "%s"' % os.path.relpath(file_name)
 			continue
 
 		# then parse the content of the post file
 		file_path = os.path.join(POST_DIR, file_name)
 		post_config, post_content = get_post_content(file_path)
 		if not post_config:
-			print 'Failed to parse the config part of "%s"' % file_name
+			print 'Failed to parse the config part of "%s"' % os.path.relpath(file_name)
 			continue
 
 		# fill into the post dict
