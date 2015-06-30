@@ -196,27 +196,37 @@ def render(site, page, template_env):
 	# generate its url
 	page['url'] = permalink
 
-	# make path
-	permalink = os.path.join(OUTPUT_DIR, permalink)
-	try:
-		os.makedirs(permalink)
-	except:
-		pass
-
 	# call jinja2 to render the page content
 	template = template_env.from_string(page['content'])
 	page['content'] = template.render(site = site, page = page, comments = site['comments'])
 
 	# call jinja2 again to fill the rendered content into templates
 	if 'layout' in page and page['layout'] != 'none':
-		template = template_env.get_template(page['layout'] + '.html')
-		content = template.render(site = site, page = page, comments = site['comments'])
-	else:
-		content = page['content']
+		layouts = page['layout'].split(',')
+		i = 0
+		for layout_raw in layouts:
+			layout = layout_raw.strip()
+			template = template_env.get_template(layout + '.html')
+			content = template.render(site = site, page = page, comments = site['comments'])
 
-	# write to output file
-	output_file = os.path.join(permalink, 'index.html')
-	f = open(output_file, 'w')
+			# the first template won't have a suffix, from the second template on the output file would have a suffix
+			if i:
+				permalink += '-' + layout
+
+			output(permalink, content)
+			i += 1
+	else:
+		output(permalink, page['content'])
+
+def output(path, content):
+	abs_path = os.path.join(OUTPUT_DIR, path)
+
+	# make path
+	if not os.path.exists(abs_path):
+		os.makedirs(abs_path)
+
+	# write file
+	f = open(os.path.join(abs_path, 'index.html'), 'w')
 	f.write(content.encode('utf-8'))
 	f.close()
 
