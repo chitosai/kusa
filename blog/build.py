@@ -41,11 +41,11 @@ def load_user_data():
 	return datas
 
 def get_pages(path):
-	'''Get all the pages under chitose root dir'''
+	'''Get all the pages under Kusa root dir'''
 	files = os.listdir(path)
 	pages = []
 	for file_name in files:
-		# check if the file is preserved by chitose or hidden in os
+		# check if the file is preserved by Kusa or hidden in os
 		if file_name[0] in [PRESERVED_DIR_PREFIX, '.']:
 			continue
 

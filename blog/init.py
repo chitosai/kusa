@@ -4,7 +4,7 @@ from config import *
 def init():
 	# check if current dir is alreay inited
 	if os.path.exists(CONFIG_FILE_NAME):
-		print 'You have already initialized Chitose Blog in this dir'
+		print 'You have already initialized Kusa Blog in this dir'
 		return False
 	
 	# make dir

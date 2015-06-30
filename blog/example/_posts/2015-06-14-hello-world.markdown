@@ -9,4 +9,4 @@ layout: post
 Congrat!  
 Seeing this page means your blog is serving correctly now!
 
-Have fun with Chitose!
+Have fun with Kusa!

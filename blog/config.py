@@ -1,6 +1,6 @@
 import os
 
-# prefix to distinguish chitose's preserved dir from user's own dir
+# prefix to distinguish Kusa's preserved dir from user's own dir
 PRESERVED_DIR_PREFIX = '_'
 
 # dirs that will be created
