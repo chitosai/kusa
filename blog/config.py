@@ -18,6 +18,7 @@ EXAMPLE_FILES = [
 	'_static/main.css',
 	'_data/links.yml',
 	'_templates/base.html',
+	'_templates/json.html',
 	'_templates/post.html',
 	'_posts/2015-06-14-hello-world.markdown',
 	'_includes/comments.html'
