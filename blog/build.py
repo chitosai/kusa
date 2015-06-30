@@ -93,13 +93,14 @@ def get_post_content(file_path, markdown = True):
 	f.close()
 
 	# check the first line
-	if file_raw[0] != '---\n':
+	if file_raw[0] not in ['---\n', '---\r\n']:
+		print 'File not started with ---?', file_path
 		return False, False
 
 	# read the config part
 	i = 1
 	total = len(file_raw)
-	while file_raw[i] != '---\n' and i < total:
+	while file_raw[i] != '---\n' and file_raw[i] != '---\r\n' and i < total:
 		i += 1
 	config_raw = ''.join(file_raw[1:i])
 
@@ -264,3 +265,6 @@ def build():
 
 	# last, just copy the whole _static dir to _dist: 1
 	copy_static()
+
+	# build finish tip
+	print 'Build completed'
