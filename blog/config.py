@@ -15,7 +15,7 @@ EXAMPLE_FILES = [
 	'index.markdown',
 	'link/index.markdown',
 	'feed/index.xml',
-	'_static/main.css',
+	'_static/kusa.css',
 	'_data/links.yml',
 	'_templates/base.html',
 	'_templates/json.html',
