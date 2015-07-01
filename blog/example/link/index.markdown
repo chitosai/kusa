@@ -3,10 +3,16 @@ layout: base
 title: Friends links
 ---
 
-This is your friends links page.
-
-<ul class="posts">
-{% for link in site.data.links %}
-  <li><span>{{ link.desc }}</span> &raquo; <a href="{{ link.url }}">{{ link.name }}</a></li>
-{% endfor %}
-</ul>
+<div class="header">
+	<h1>{{ site.name }}</h1>
+	<h5>{{ site.description }}</h5>
+	{% include 'nav.html' %}
+</div>
+<div class="posts">
+	{% for link in site.data.links %}
+	<a href="{{ link.url }}" id="{{ link.name.replace(' ', '_') }}">
+		<h3>{{ link.name }}</h3>
+		<p class="meta">{{ link.desc }}</p>
+	</a>
+	{% endfor %}
+</div>

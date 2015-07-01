@@ -2,11 +2,17 @@
 title: Index
 layout: base 
 ---
-<div id="home">
-  <h1>{{ site.description }}</h1>
-  <ul class="posts">
-    {% for post in site.posts %}
-      <li><span>{{ post.date.strftime('%Y/%m/%d') }}</span> &raquo; <a href="{{ post.url }}">{{ post.title }}</a></li>
-    {% endfor %}
-  </ul>
+
+<div class="header">
+	<h1>{{ site.name }}</h1>
+	<h5>{{ site.description }}</h5>
+	{% include 'nav.html' %}
+</div>
+<div class="posts">
+	{% for post in site.posts %}
+	<a href="{{ post.url }}">
+		<h3>{{ post.title }}</h3>
+		<p class="meta">{{ post.author }} ON {{ post.date.strftime('%Y/%m/%d') }}</p>
+	</a>
+	{% endfor %}
 </div>
