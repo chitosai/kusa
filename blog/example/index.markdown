@@ -12,7 +12,7 @@ layout: base
 	{% for post in site.posts %}
 	<a href="{{ post.url }}">
 		<h3>{{ post.title }}</h3>
-		<p class="meta">{{ post.author }} ON {{ post.date.strftime('%Y/%m/%d') }}</p>
+		<p class="meta">{{ post.author }} posted on {{ post.date.strftime('%Y/%m/%d') }}</p>
 	</a>
 	{% endfor %}
 </div>
