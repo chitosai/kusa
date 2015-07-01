@@ -110,6 +110,10 @@ def get_post_content(file_path, markdown = True):
 	except:
 		return False, False
 
+	# convert post date from datetime.datetime to datetime.date
+	if post_config.has_key('date') and type(post_config['date']) == datetime.datetime:
+		post_config['date'] = post_config['date'].date()
+
 	# get the content and compile markdown
 	post_content_raw = ''.join(file_raw[i+1:])
 	# compile the content as markdown?
@@ -146,8 +150,8 @@ def get_posts():
 		# append to posts
 		posts.append(post)
 
-	# reverse the list so the lastest post is at the head
-	posts.reverse()
+	# sort the post list according to post date
+	posts = sorted(posts, cmp = lambda x, y : cmp( y['date'], x['date'] ) )
 	return posts
 
 def get_templates():
