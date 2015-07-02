@@ -11,6 +11,7 @@ CONFIG_FILE_NAME = '_config.yml'
 
 # example files that should be put into user's blog folder
 EXAMPLE_FILES = [
+	'.gitignore',
 	'_config.yml',
 	'index.markdown',
 	'link/index.markdown',
@@ -21,6 +22,7 @@ EXAMPLE_FILES = [
 	'_templates/json.html',
 	'_templates/post.html',
 	'_posts/2015-06-14-hello-world.markdown',
+	'_includes/nav.html',
 	'_includes/comments.html'
 ]
 
